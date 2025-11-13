@@ -1,0 +1,58 @@
+📤 Upload an image (JPG/PNG):
+ 
+Screenshot 2025-11-13 at 21.35.18.png(image/png) - 902667 bytes, last modified: n/a - 100% done
+ Saving Screenshot 2025-11-13 at 21.35.18.png to Screenshot 2025-11-13 at 21.35.18.png
+Iteration 1: Best Fitness = 354.43253, Threshold = 137.21
+Iteration 2: Best Fitness = 379.28291, Threshold = 118.82
+Iteration 3: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 4: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 5: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 6: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 7: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 8: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 9: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 10: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 11: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 12: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 13: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 14: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 15: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 16: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 17: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 18: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 19: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 20: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 21: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 22: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 23: Best Fitness = 380.05984, Threshold = 121.81
+/tmp/ipython-input-1969087285.py:21: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+  threshold = int(threshold)
+Iteration 24: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 25: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 26: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 27: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 28: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 29: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 30: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 31: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 32: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 33: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 34: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 35: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 36: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 37: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 38: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 39: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 40: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 41: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 42: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 43: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 44: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 45: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 46: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 47: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 48: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 49: Best Fitness = 380.05984, Threshold = 121.81
+Iteration 50: Best Fitness = 380.05984, Threshold = 121.81
+
+Optimal Threshold Found by GWO: 121
