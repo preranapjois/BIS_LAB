@@ -1,0 +1,90 @@
+import numpy as np
+
+# XOR dataset
+inputs = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+expected = np.array([[0], [1], [1], [0]])
+
+# Activation function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Derivative (for information)
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# Neural network forward pass
+def forward_pass(weights, x):
+    # Decode weights
+    w1 = weights[:4].reshape((2, 2))
+    b1 = weights[4:6]
+    w2 = weights[6:8].reshape((2, 1))
+    b2 = weights[8]
+    
+    # Hidden layer
+    z1 = np.dot(x, w1) + b1
+    a1 = sigmoid(z1)
+    
+    # Output layer
+    z2 = np.dot(a1, w2) + b2
+    a2 = sigmoid(z2)
+    
+    return a2
+
+# Fitness function
+def fitness(weights):
+    predictions = forward_pass(weights, inputs)
+    error = np.mean((predictions - expected) ** 2)
+    return -error  # Minimize error → maximize negative error
+
+# Genetic Algorithm parameters
+pop_size = 100
+num_weights = 9
+generations = 200
+mutation_rate = 0.1
+
+# Initialize population
+population = np.random.uniform(-1, 1, (pop_size, num_weights))
+
+for generation in range(generations):
+    # Compute fitness for all
+    fitness_scores = np.array([fitness(ind) for ind in population])
+    
+    # Select best individuals
+    sorted_idx = np.argsort(fitness_scores)[::-1]
+    population = population[sorted_idx]
+    fitness_scores = fitness_scores[sorted_idx]
+    
+    # Keep top 20% and breed new children
+    top_n = int(0.2 * pop_size)
+    parents = population[:top_n]
+    children = []
+    
+    while len(children) < pop_size - top_n:
+        p1, p2 = parents[np.random.randint(0, top_n, 2)]
+        crossover = np.random.randint(1, num_weights)
+        child = np.concatenate((p1[:crossover], p2[crossover:]))
+        if np.random.rand() < mutation_rate:
+            mutation_point = np.random.randint(num_weights)
+            child[mutation_point] += np.random.uniform(-0.5, 0.5)
+        children.append(child)
+    
+    population = np.vstack((parents, children))
+    
+    # Display progress
+    if generation % 10 == 0 or generation == generations - 1:
+        print(f"Generation {generation+1} | Best fitness: {fitness_scores[0]:.4f}")
+
+# Best solution
+best_weights = population[0]
+print("\nFinal predictions:")
+preds = forward_pass(best_weights, inputs)
+for i in range(len(inputs)):
+    print(f"Input: {inputs[i]} => Predicted: {preds[i][0]:.4f} | Expected: {expected[i][0]}")
+
+print("\nDataset: XOR dataset")
+print("\nThis is a classic non-linear classification problem (cannot be solved by a single perceptron; needs hidden layers or non-linear models).")
