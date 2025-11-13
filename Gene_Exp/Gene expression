@@ -1,0 +1,80 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+import cv2
+
+# ---------- Step 1: Create a synthetic grayscale image (gradient + noise) ----------
+rows, cols = 128, 128
+x = np.tile(np.linspace(0, 255, cols, dtype=np.uint8), (rows, 1))
+noise = np.random.randint(0, 40, (rows, cols), dtype=np.uint8)
+img = cv2.add(x, noise)
+
+# ---------- Step 2: Define fitness function ----------
+# Fitness = inter-class variance (Otsu-like)
+def fitness(threshold):
+    foreground = img[img > threshold]
+    background = img[img <= threshold]
+    if len(foreground) == 0 or len(background) == 0:
+        return 0
+    w0 = len(background) / (rows * cols)
+    w1 = len(foreground) / (rows * cols)
+    m0 = np.mean(background)
+    m1 = np.mean(foreground)
+    return w0 * w1 * ((m0 - m1) ** 2)
+
+# ---------- Step 3: Genetic Algorithm ----------
+pop_size = 30
+generations = 40
+population = np.random.randint(0, 255, size=pop_size)
+
+for g in range(generations):
+    scores = np.array([fitness(t) for t in population])
+    best_idx = np.argmax(scores)
+    best_threshold = population[best_idx]
+    print(f"Generation {g+1} | Best threshold: {best_threshold}")
+
+    # Selection (top 50%)
+    sorted_idx = np.argsort(scores)[::-1]
+    parents = population[sorted_idx[:pop_size // 2]]
+
+    # Crossover + Mutation
+    children = []
+    while len(children) < pop_size - len(parents):
+        p1, p2 = random.sample(list(parents), 2)
+        child = (p1 + p2) // 2
+        if random.random() < 0.3:
+            child += random.randint(-10, 10)
+        child = np.clip(child, 0, 255)
+        children.append(child)
+    population = np.concatenate((parents, children))
+
+best_threshold = int(best_threshold)
+print("\nGA Result → Best threshold found =", best_threshold)
+
+# ---------- Step 4: Apply GA threshold ----------
+_, ga_result = cv2.threshold(img, best_threshold, 255, cv2.THRESH_BINARY)
+
+# ---------- Step 5: Rule-based threshold (simple learned rule example) ----------
+rule_threshold = int(0.65 * np.mean(img) + 40)
+_, rule_result = cv2.threshold(img, rule_threshold, 255, cv2.THRESH_BINARY)
+print("Rule-based threshold result =", rule_threshold)
+
+# ---------- Step 6: Plot results ----------
+plt.figure(figsize=(10, 8))
+
+plt.subplot(2, 1, 1)
+plt.imshow(ga_result, cmap='gray')
+plt.title(f"GA Threshold = {best_threshold}")
+
+plt.subplot(2, 1, 2)
+plt.imshow(rule_result, cmap='gray')
+plt.title(f"GAE Rule-based")
+
+plt.tight_layout()
+plt.show()
+
+# ---------- Step 7: Summary ----------
+print("\n* GA Result → Best threshold found =", best_threshold)
+print("* GAE Rule-based result → learned rule = 0.65 × pixel mean + 40")
+print("1) Original image → synthetic gradient + noise")
+print("2) GA thresholding → clear black & white split at threshold =", best_threshold)
