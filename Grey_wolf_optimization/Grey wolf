@@ -1,5 +1,4 @@
-# 🐺 Grey Wolf Optimization (GWO) — Foreground & Background Differentiation
-# Works perfectly in Google Colab
+
 
 import cv2
 import numpy as np
