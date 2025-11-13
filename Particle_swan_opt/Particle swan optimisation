@@ -1,0 +1,61 @@
+import numpy as np
+
+# --- Energy Optimization Function (example) ---
+# Suppose: f(x, y) = (x^2 + y^2) + 10 * np.sin(x) * np.sin(y)
+# Goal: minimize energy loss (lower is better)
+def energy_function(position):
+    x, y = position
+    return (x**2 + y**2) + 10 * np.sin(x) * np.sin(y)
+
+# --- PSO Parameters ---
+num_particles = 30
+dimensions = 2
+iterations = 100
+
+w = 0.7      # inertia weight
+c1 = 1.5     # cognitive coefficient
+c2 = 1.5     # social coefficient
+
+# --- Initialize swarm ---
+positions = np.random.uniform(-10, 10, (num_particles, dimensions))
+velocities = np.random.uniform(-1, 1, (num_particles, dimensions))
+
+pbest_positions = np.copy(positions)
+pbest_scores = np.array([energy_function(p) for p in positions])
+
+gbest_position = pbest_positions[np.argmin(pbest_scores)]
+gbest_score = np.min(pbest_scores)
+
+# --- PSO Main Loop ---
+for t in range(iterations):
+    for i in range(num_particles):
+        # Evaluate fitness
+        fitness = energy_function(positions[i])
+        
+        # Update personal best
+        if fitness < pbest_scores[i]:
+            pbest_scores[i] = fitness
+            pbest_positions[i] = positions[i]
+    
+    # Update global best
+    best_particle = np.argmin(pbest_scores)
+    if pbest_scores[best_particle] < gbest_score:
+        gbest_score = pbest_scores[best_particle]
+        gbest_position = pbest_positions[best_particle]
+    
+    # Update velocity and position
+    r1, r2 = np.random.rand(), np.random.rand()
+    for i in range(num_particles):
+        velocities[i] = (w * velocities[i] +
+                         c1 * r1 * (pbest_positions[i] - positions[i]) +
+                         c2 * r2 * (gbest_position - positions[i]))
+        positions[i] += velocities[i]
+    
+    # Print progress (similar to your handwritten output)
+    print(f"Iteration {t+1}: Best Fitness = {gbest_score:.12e}")
+
+# --- Final Results ---
+print("\nBest Solution Found:")
+print(gbest_position)
+print("\nBest Objective Function Value:")
+print(gbest_score)
