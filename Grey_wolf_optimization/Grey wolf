@@ -1,0 +1,104 @@
+# 🐺 Grey Wolf Optimization (GWO) — Foreground & Background Differentiation
+# Works perfectly in Google Colab
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from google.colab import files
+
+# ---- Step 1: Upload an image ----
+print("📤 Upload an image (JPG/PNG):")
+uploaded = files.upload()
+
+# Get the filename
+filename = list(uploaded.keys())[0]
+img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+img = cv2.resize(img, (256, 256))  # resize for speed
+
+# ---- Step 2: Objective Function ----
+# Maximize between-class variance (like Otsu's method)
+def fitness(threshold):
+    threshold = int(threshold)
+    foreground = img[img >= threshold]
+    background = img[img < threshold]
+    if len(foreground) == 0 or len(background) == 0:
+        return 0
+    w0 = len(background) / img.size
+    w1 = len(foreground) / img.size
+    u0 = np.mean(background)
+    u1 = np.mean(foreground)
+    return w0 * w1 * (u0 - u1)**2  # between-class variance
+
+# ---- Step 3: Grey Wolf Optimization ----
+def grey_wolf_optimization(fitness_func, lb, ub, dim=1, n_wolves=20, iterations=50):
+    alpha_pos = np.zeros(dim)
+    beta_pos = np.zeros(dim)
+    delta_pos = np.zeros(dim)
+    alpha_score = float('-inf')
+    beta_score = float('-inf')
+    delta_score = float('-inf')
+    positions = np.random.uniform(lb, ub, (n_wolves, dim))
+    
+    for t in range(iterations):
+        a = 2 - t * (2 / iterations)
+        for i in range(n_wolves):
+            fitness_value = fitness_func(positions[i])
+            if fitness_value > alpha_score:
+                alpha_score = fitness_value
+                alpha_pos = positions[i].copy()
+            elif fitness_value > beta_score:
+                beta_score = fitness_value
+                beta_pos = positions[i].copy()
+            elif fitness_value > delta_score:
+                delta_score = fitness_value
+                delta_pos = positions[i].copy()
+        for i in range(n_wolves):
+            for j in range(dim):
+                r1, r2 = np.random.rand(), np.random.rand()
+                A1, C1 = 2 * a * r1 - a, 2 * r2
+                D_alpha = abs(C1 * alpha_pos[j] - positions[i][j])
+                X1 = alpha_pos[j] - A1 * D_alpha
+
+                r1, r2 = np.random.rand(), np.random.rand()
+                A2, C2 = 2 * a * r1 - a, 2 * r2
+                D_beta = abs(C2 * beta_pos[j] - positions[i][j])
+                X2 = beta_pos[j] - A2 * D_beta
+
+                r1, r2 = np.random.rand(), np.random.rand()
+                A3, C3 = 2 * a * r1 - a, 2 * r2
+                D_delta = abs(C3 * delta_pos[j] - positions[i][j])
+                X3 = delta_pos[j] - A3 * D_delta
+
+                positions[i][j] = (X1 + X2 + X3) / 3
+
+        positions = np.clip(positions, lb, ub)
+        print(f"Iteration {t+1}: Best Fitness = {alpha_score:.5f}, Threshold = {alpha_pos[0]:.2f}")
+    
+    return int(alpha_pos[0])
+
+# ---- Step 4: Run GWO ----
+best_threshold = grey_wolf_optimization(fitness, lb=0, ub=255, dim=1, n_wolves=20, iterations=50)
+print(f"\nOptimal Threshold Found by GWO: {best_threshold}")
+
+# ---- Step 5: Segment Foreground and Background ----
+_, foreground = cv2.threshold(img, best_threshold, 255, cv2.THRESH_BINARY)
+background = cv2.bitwise_not(foreground)
+
+# ---- Step 6: Display Results ----
+plt.figure(figsize=(12, 4))
+plt.subplot(1, 3, 1)
+plt.imshow(img, cmap='gray')
+plt.title("Original Image")
+plt.axis('off')
+
+plt.subplot(1, 3, 2)
+plt.imshow(foreground, cmap='gray')
+plt.title("Foreground (GWO)")
+plt.axis('off')
+
+plt.subplot(1, 3, 3)
+plt.imshow(background, cmap='gray')
+plt.title("Background")
+plt.axis('off')
+
+plt.show()
