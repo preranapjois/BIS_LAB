@@ -1,4 +1,3 @@
-# ⚡ Cuckoo Search Algorithm — Electrical Grid Optimization (Fixed for Colab)
 
 import numpy as np
 from math import gamma, sin, pi
